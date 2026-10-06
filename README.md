@@ -44,9 +44,10 @@ pytest
 
 | Papel | Quem |
 |---|---|
-| Product Owner | |
-| Scrum Master | |
-| Dev Team | |
+| Product Owner | Guilherme Pama |
+| Scrum Master | Heitor D'Ávila |
+| Relatora (documentação, atas, Taiga) | Érica Crepald |
+| Dev Team | Guilherme Pama, Heitor D'Ávila, João Suficier |
 
 ## Convenções
 
