@@ -23,6 +23,23 @@ python manage.py runserver
 
 Abra http://127.0.0.1:8000 — e http://127.0.0.1:8000/admin para o painel.
 
+## API (Sprint 3 — consumida pelo bot)
+
+```bash
+python manage.py criar_bot          # cria o usuário de serviço e imprime BOT_PASSWORD (guarde)
+```
+
+- Swagger: http://127.0.0.1:8000/api/docs/
+- Token: `POST /api/token/` com `{"username": "bot", "password": "..."}` → `access` (12h) e `refresh`
+- Depois, header `Authorization: Bearer <access>` em `GET /api/cardapio/hoje/`, `POST /api/confirmacoes/`, `POST /api/vincular/`, `GET /api/usuarios/<telegram_id>/`
+- Só o usuário `bot` passa (`api/permissoes.py`); um aluno com JWT recebe 403.
+
+## PostgreSQL (Neon) — produção
+
+1. Crie um projeto em https://neon.tech (free), banco `merenda`, região `sa-east-1`.
+2. Copie a connection string para `DATABASE_URL` no `.env` (com `?sslmode=require`).
+3. `python manage.py migrate` — pronto; o código não muda (ADR-0003).
+
 ## Testes
 
 ```bash

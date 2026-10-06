@@ -23,7 +23,7 @@
 
       {# x-show: aparece na hora, sem ir ao servidor, quando escolhe Telegram sem ter vinculado #}
       <div class="alert alert-warning py-2 small" x-show="(canal === 'telegram' || canal === 'ambos') && !telegram" x-cloak>
-        Você ainda não vinculou seu Telegram. O vínculo chega na Sprint 3 — até lá os avisos vão só pelo site.
+        Você ainda não vinculou seu Telegram — <a href="{% url 'telegram' %}">conectar agora</a>. Até lá os avisos vão só pelo site.
       </div>
 
       <button class="btn btn-success w-100">Salvar</button>

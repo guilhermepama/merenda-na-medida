@@ -42,6 +42,14 @@ class Confirmacao(models.Model):
         return cls.objects.filter(data=data_jantar, confirmado=True).count()
 
     @classmethod
+    def definir(cls, usuario, data_jantar: date, confirmado: bool) -> "Confirmacao":
+        """Define explicitamente (usado pela API/bot: botões 'Vou' / 'Não vou')."""
+        obj, _ = cls.objects.update_or_create(
+            usuario=usuario, data=data_jantar, defaults={"confirmado": confirmado}
+        )
+        return obj
+
+    @classmethod
     def alternar(cls, usuario, data_jantar: date) -> "Confirmacao":
         """
         O toggle. Primeira vez: cria confirmado=True. Depois: inverte.

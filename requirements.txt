@@ -5,11 +5,11 @@ dj-database-url
 pytest
 pytest-django
 
-# Fase 3
-# psycopg[binary]
-# djangorestframework
-# djangorestframework-simplejwt
-# drf-spectacular
+# Fase 3 — API (ADR-0005) e Postgres/Neon (ADR-0003)
+djangorestframework
+djangorestframework-simplejwt
+drf-spectacular
+psycopg[binary]
 
 # Fase 4
 # requests

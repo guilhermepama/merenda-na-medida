@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block titulo %}Conectar Telegram — Merenda na Medida{% endblock %}
+{% block conteudo %}
+<div class="row justify-content-center"><div class="col-md-6">
+  <div class="card shadow-sm"><div class="card-body">
+    <h1 class="h4 mb-3">Conectar ao Telegram</h1>
+
+    {% if user.telegram_id %}
+      <div class="alert alert-success">✅ Sua conta está vinculada ao Telegram.</div>
+      <form method="post">{% csrf_token %}<input type="hidden" name="acao" value="desvincular">
+        <button class="btn btn-outline-danger btn-sm">Desvincular</button>
+      </form>
+    {% else %}
+      <ol class="mb-3">
+        <li>Abra o bot <strong>@MerendaNaMedidaBot</strong> no Telegram e toque em <em>Iniciar</em>.</li>
+        <li>Envie: <code>/vincular {% if codigo %}{{ codigo.codigo }}{% else %}CÓDIGO{% endif %}</code></li>
+      </ol>
+      {% if codigo %}
+        <div class="text-center my-4">
+          <div class="display-4 fw-bold font-monospace">{{ codigo.codigo }}</div>
+          <div class="small text-muted">vale por 10 minutos</div>
+        </div>
+      {% endif %}
+      <form method="post">{% csrf_token %}
+        <button class="btn btn-success w-100">{% if codigo %}Gerar outro código{% else %}Gerar código{% endif %}</button>
+      </form>
+    {% endif %}
+    <a class="small d-block mt-3" href="{% url 'preferencias' %}">‹ preferências</a>
+  </div></div>
+</div></div>
+{% endblock %}

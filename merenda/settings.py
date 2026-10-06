@@ -24,6 +24,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # apps do projeto (um por domínio — ADR-0001)
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "drf_spectacular",
     "contas",
     "cardapio",
     "confirmacoes",
@@ -102,6 +105,27 @@ HORARIO_CORTE = time(int(_h), int(_m))
 # A partir de que horas o jantar de hoje pode ser avaliado (jantar é servido às 20:40).
 _h, _m = os.getenv("HORARIO_JANTAR", "20:40").split(":")
 HORARIO_JANTAR = time(int(_h), int(_m))
+
+# ---- API (ADR-0005): DRF + JWT; o bot é o único cliente ----
+from datetime import timedelta  # noqa: E402
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework_simplejwt.authentication.JWTAuthentication"],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
+}
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=12),   # o bot renova 2x/dia
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
+}
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Merenda na Medida — API",
+    "DESCRIPTION": "Consumida pelo bot do Telegram: cardápio, confirmação de presença e vínculo de conta.",
+    "VERSION": "1.0.0",
+}
+BOT_USERNAME = os.getenv("BOT_USERNAME", "bot")   # usuário de serviço que a API aceita
+VINCULO_VALIDADE_MINUTOS = 10
 
 # ---- Integrações (preenchidas nas sprints 2-4) ----
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")  # S4 — ADR-0006
