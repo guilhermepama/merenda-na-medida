@@ -17,6 +17,8 @@
   <div class="container">
     <a class="navbar-brand" href="{% url 'home' %}">🍽️ Merenda na Medida</a>
     <div class="ms-auto d-flex gap-3 align-items-center text-white">
+      <a class="text-white text-decoration-none small" href="{% url 'cardapio_semana' %}">Semana</a>
+      {% if user.is_staff %}<a class="text-white text-decoration-none small" href="{% url 'dashboard' %}">Produção</a>{% endif %}
       {% if user.is_authenticated %}
         <span>Olá, {{ user.first_name|default:user.username }}</span>
         <form method="post" action="{% url 'logout' %}" class="m-0">{% csrf_token %}

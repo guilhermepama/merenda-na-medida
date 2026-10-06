@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block titulo %}Produção — Merenda na Medida{% endblock %}
+{% block conteudo %}
+<h1 class="h4 mb-3">Painel da produção</h1>
+
+<div class="card shadow-sm mb-4 text-center">
+  <div class="card-body">
+    <div class="text-muted">Confirmados para hoje, {{ hoje|date:"d/m" }}</div>
+    <div class="display-3 fw-bold text-success">{{ total_hoje }}</div>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h2 class="h6 text-muted mb-3">Últimos 7 dias</h2>
+    {% for h in historico %}
+      <div class="d-flex align-items-center mb-2">
+        <div style="width: 5rem" class="small {% if h.e_hoje %}fw-bold{% endif %}">{{ h.data|date:"D d/m" }}</div>
+        <div class="flex-grow-1 bg-light rounded">
+          <div class="bg-success rounded text-white small ps-2"
+               style="width: {% widthratio h.total maximo 100 %}%; min-width: 1.5rem">{{ h.total }}</div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

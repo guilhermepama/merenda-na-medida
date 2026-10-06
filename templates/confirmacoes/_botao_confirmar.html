@@ -1,0 +1,17 @@
+{# Parcial do toggle. Na Sprint 2 este mesmo arquivo é o que o HTMX troca na tela. #}
+{# Espera no contexto: data, confirmacao (ou None), pode_alterar #}
+{% if pode_alterar %}
+  <form method="post" action="{% url 'confirmacao_alternar' data|date:'Y-m-d' %}" class="m-0">
+    {% csrf_token %}
+    {% if confirmacao and confirmacao.confirmado %}
+      <button class="btn btn-outline-danger">✅ Vou jantar — cancelar</button>
+    {% else %}
+      <button class="btn btn-success">Vou jantar</button>
+    {% endif %}
+  </form>
+{% else %}
+  <span class="text-muted small">
+    {% if confirmacao and confirmacao.confirmado %}✅ Você confirmou{% else %}Não confirmado{% endif %}
+    · prazo encerrado
+  </span>
+{% endif %}

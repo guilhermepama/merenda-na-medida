@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block titulo %}Semana — Merenda na Medida{% endblock %}
+{% block conteudo %}
+<h1 class="h4 mb-3">Cardápio da semana</h1>
+<div class="list-group shadow-sm">
+  {% for d in semana %}
+    <a href="{% url 'cardapio_dia' d.data|date:'Y-m-d' %}"
+       class="list-group-item list-group-item-action {% if d.e_hoje %}list-group-item-success{% endif %}">
+      <div class="d-flex justify-content-between">
+        <strong>{{ d.data|date:"D d/m" }}</strong>
+        {% if d.e_hoje %}<span class="badge bg-success">hoje</span>{% endif %}
+      </div>
+      <div class="small text-muted text-truncate">
+        {% if d.cardapio %}{{ d.cardapio.descricao|truncatechars:90 }}{% else %}—{% endif %}
+      </div>
+    </a>
+  {% endfor %}
+</div>
+{% endblock %}
