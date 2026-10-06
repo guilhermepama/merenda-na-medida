@@ -1,0 +1,20 @@
+# Fase 0/1 — base
+Django>=5.2,<6
+python-dotenv
+dj-database-url
+pytest
+pytest-django
+
+# Fase 2 — descomente quando chegar lá
+# pymongo[srv]
+
+# Fase 3
+# psycopg[binary]
+# djangorestframework
+# djangorestframework-simplejwt
+# drf-spectacular
+
+# Fase 4
+# requests
+# whitenoise
+# gunicorn
