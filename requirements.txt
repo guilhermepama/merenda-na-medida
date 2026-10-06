@@ -5,9 +5,6 @@ dj-database-url
 pytest
 pytest-django
 
-# Fase 2 — descomente quando chegar lá
-# pymongo[srv]
-
 # Fase 3
 # psycopg[binary]
 # djangorestframework

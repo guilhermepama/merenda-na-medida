@@ -99,8 +99,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Até que horas o aluno pode mudar a confirmação do dia. Formato HH:MM.
 _h, _m = os.getenv("HORARIO_CORTE", "16:00").split(":")
 HORARIO_CORTE = time(int(_h), int(_m))
+# A partir de que horas o jantar de hoje pode ser avaliado (jantar é servido às 20:40).
+_h, _m = os.getenv("HORARIO_JANTAR", "20:40").split(":")
+HORARIO_JANTAR = time(int(_h), int(_m))
 
 # ---- Integrações (preenchidas nas sprints 2-4) ----
-MONGO_URI = os.getenv("MONGO_URI", "")              # S2 — ADR-0002
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")  # S4 — ADR-0006
 TELEGRAM_WEBHOOK_SECRET = os.getenv("TELEGRAM_WEBHOOK_SECRET", "")

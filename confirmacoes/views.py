@@ -7,6 +7,8 @@ from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
+from avaliacoes.models import Avaliacao
+
 from .models import Confirmacao
 
 
@@ -14,15 +16,30 @@ from .models import Confirmacao
 @require_POST
 def alternar(request, data: str):
     """
-    Toggle de presença. POST puro na Sprint 1; na Sprint 2 vira hx-post devolvendo
-    só o parcial _botao_confirmar.html (ADR-0004). A regra de negócio NÃO muda.
+    Toggle de presença (ADR-0004).
+    - Com HTMX (header HX-Request): devolve só o parcial _card_confirmacao.html e o
+      navegador troca o card no lugar — sem reload.
+    - Sem HTMX (JS desligado): POST normal + redirect, como na Sprint 1.
+    A regra de negócio é a mesma nos dois caminhos.
     """
     data_obj = date.fromisoformat(data)
-    if not Confirmacao.pode_alterar_agora(data_obj):
-        return HttpResponseForbidden("Passou do horário de corte para este dia.")
+    e_htmx = request.headers.get("HX-Request") == "true"
 
-    Confirmacao.alternar(request.user, data_obj)
-    return redirect("cardapio_dia", data=data)
+    if Confirmacao.pode_alterar_agora(data_obj):
+        Confirmacao.alternar(request.user, data_obj)
+    elif not e_htmx:
+        return HttpResponseForbidden("Passou do horário de corte para este dia.")
+    # via HTMX, mesmo fora do prazo devolvemos o card: ele já mostra "prazo encerrado"
+
+    if not e_htmx:
+        return redirect("cardapio_dia", data=data)  # fallback sem JS continua funcionando
+
+    return render(request, "confirmacoes/_card_confirmacao.html", {
+        "data": data_obj,
+        "confirmacao": Confirmacao.objects.filter(usuario=request.user, data=data_obj).first(),
+        "pode_alterar": Confirmacao.pode_alterar_agora(data_obj),
+        "total_confirmados": Confirmacao.total_do_dia(data_obj),
+    })
 
 
 @staff_member_required
@@ -33,7 +50,10 @@ def dashboard(request):
     """
     hoje = timezone.localdate()
     dias = [hoje - timedelta(days=i) for i in range(6, -1, -1)]  # 6 dias atrás … hoje
-    historico = [{"data": d, "total": Confirmacao.total_do_dia(d), "e_hoje": d == hoje} for d in dias]
+    historico = [
+        {"data": d, "total": Confirmacao.total_do_dia(d), "e_hoje": d == hoje, "avaliacao": Avaliacao.resumo_do_dia(d)}
+        for d in dias
+    ]
     maximo = max((h["total"] for h in historico), default=0) or 1  # evita divisão por zero na barra
     return render(
         request,

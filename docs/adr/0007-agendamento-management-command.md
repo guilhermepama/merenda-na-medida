@@ -1,6 +1,6 @@
 # ADR-0007: Pergunta diária via management command disparado por cron da plataforma
 
-- **Status:** Proposto
+- **Status:** Aceito (grupo, 06/10/2026)
 - **Data:** 2026-10-06
 - **Sprint:** S4
 - **Autor(es):** 

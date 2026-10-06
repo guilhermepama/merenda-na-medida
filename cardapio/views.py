@@ -6,6 +6,8 @@ from datetime import date, timedelta
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
+from avaliacoes.models import Avaliacao
+from avaliacoes.views import pode_avaliar_agora
 from confirmacoes.models import Confirmacao
 
 from .models import Cardapio
@@ -24,9 +26,11 @@ def dia(request, data: str):
     data_obj = date.fromisoformat(data)
     cardapio = Cardapio.objects.filter(data=data_obj).first()
 
-    confirmacao = None
+    confirmacao = minha_avaliacao = None
     if request.user.is_authenticated:
         confirmacao = Confirmacao.objects.filter(usuario=request.user, data=data_obj).first()
+        if cardapio:
+            minha_avaliacao = Avaliacao.objects.filter(usuario=request.user, data=data_obj).first()
 
     contexto = {
         "data": data_obj,
@@ -37,6 +41,9 @@ def dia(request, data: str):
         "confirmacao": confirmacao,
         "pode_alterar": Confirmacao.pode_alterar_agora(data_obj),
         "total_confirmados": Confirmacao.total_do_dia(data_obj),
+        "pode_avaliar": pode_avaliar_agora(data_obj),
+        "minha_avaliacao": minha_avaliacao,
+        "resumo_avaliacao": Avaliacao.resumo_do_dia(data_obj) if cardapio else {"total": 0},
     }
     return render(request, "cardapio/dia.html", contexto)
 

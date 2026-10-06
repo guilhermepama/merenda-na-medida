@@ -1,6 +1,6 @@
 # ADR-0010: Testes automatizados só nas regras críticas (TDD seletivo)
 
-- **Status:** Proposto
+- **Status:** Aceito (grupo, 06/10/2026)
 - **Data:** 2026-10-06
 - **Sprint:** S4 (mas a regra de corte é testada desde a S1)
 - **Autor(es):** 

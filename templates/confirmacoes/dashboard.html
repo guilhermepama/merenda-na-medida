@@ -20,6 +20,9 @@
           <div class="bg-success rounded text-white small ps-2"
                style="width: {% widthratio h.total maximo 100 %}%; min-width: 1.5rem">{{ h.total }}</div>
         </div>
+        <div style="width: 7rem" class="small text-muted text-end">
+          {% if h.avaliacao.total %}★ {{ h.avaliacao.media }} · {{ h.avaliacao.pct_repetiria }}%{% else %}—{% endif %}
+        </div>
       </div>
     {% endfor %}
   </div>

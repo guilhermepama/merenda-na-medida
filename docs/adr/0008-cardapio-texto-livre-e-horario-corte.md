@@ -1,6 +1,6 @@
 # ADR-0008: Cardápio como texto livre; horário de corte como função pura configurável
 
-- **Status:** Proposto
+- **Status:** Aceito (grupo, 06/10/2026)
 - **Data:** 2026-10-06
 - **Sprint:** S1 / S2
 - **Autor(es):** 

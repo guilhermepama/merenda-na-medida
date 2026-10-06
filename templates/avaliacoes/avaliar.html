@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block titulo %}Avaliar jantar de {{ data|date:"d/m" }} — Merenda na Medida{% endblock %}
+{% block conteudo %}
+<div class="row justify-content-center"><div class="col-md-6">
+  <div class="card shadow-sm"><div class="card-body">
+    <h1 class="h4">Como foi o jantar de {{ data|date:"d/m" }}?</h1>
+    <p class="text-muted small" style="white-space: pre-line">{{ cardapio.descricao }}</p>
+    <form method="post">{% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn btn-success w-100">{% if existente %}Atualizar avaliação{% else %}Enviar avaliação{% endif %}</button>
+    </form>
+    <a class="small d-block mt-3" href="{% url 'cardapio_dia' data|date:'Y-m-d' %}">‹ voltar ao cardápio</a>
+  </div></div>
+</div></div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block titulo %}Preferências — Merenda na Medida{% endblock %}
+{% block conteudo %}
+<div class="row justify-content-center"><div class="col-md-6">
+  <div class="card shadow-sm"><div class="card-body"
+       x-data="{ canal: '{{ form.notificacao.value }}', telegram: {{ user.telegram_id|yesno:'true,false' }} }">
+    <h1 class="h4 mb-3">Minhas preferências</h1>
+    <form method="post">{% csrf_token %}
+      <p>{{ form.first_name.label_tag }} {{ form.first_name }}</p>
+      <p>{{ form.email.label_tag }} {{ form.email }}</p>
+
+      <fieldset class="mb-3">
+        <legend class="fs-6">{{ form.notificacao.label }}</legend>
+        {% for opcao in form.notificacao %}
+          <div class="form-check">
+            {# x-model: o Alpine acompanha a opção marcada, só no navegador #}
+            <input type="radio" class="form-check-input" name="{{ opcao.data.name }}"
+                   value="{{ opcao.data.value }}" id="{{ opcao.id_for_label }}" x-model="canal">
+            <label class="form-check-label" for="{{ opcao.id_for_label }}">{{ opcao.choice_label }}</label>
+          </div>
+        {% endfor %}
+      </fieldset>
+
+      {# x-show: aparece na hora, sem ir ao servidor, quando escolhe Telegram sem ter vinculado #}
+      <div class="alert alert-warning py-2 small" x-show="(canal === 'telegram' || canal === 'ambos') && !telegram" x-cloak>
+        Você ainda não vinculou seu Telegram. O vínculo chega na Sprint 3 — até lá os avisos vão só pelo site.
+      </div>
+
+      <button class="btn btn-success w-100">Salvar</button>
+    </form>
+  </div></div>
+</div></div>
+{% endblock %}

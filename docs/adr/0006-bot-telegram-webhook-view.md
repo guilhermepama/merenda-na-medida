@@ -1,6 +1,6 @@
 # ADR-0006: Bot do Telegram como view Django (webhook), sem framework de bot
 
-- **Status:** Proposto
+- **Status:** Aceito (grupo, 06/10/2026)
 - **Data:** 2026-10-06
 - **Sprint:** S3 (vínculo) / S4 (bot)
 - **Autor(es):** 

@@ -1,6 +1,6 @@
 # ADR-0002: Persistência poliglota — PostgreSQL para o núcleo, MongoDB para avaliações
 
-- **Status:** Aceito
+- **Status:** Substituído por [ADR-0011](0011-avaliacao-relacional-sem-mongodb.md) — a análise com o dado real não sustentou a justificativa; mantido como registro do raciocínio original
 - **Data:** 2026-10-06
 - **Sprint:** S1 (modelo) / S2 (Mongo)
 - **Autor(es):** grupo

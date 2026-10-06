@@ -1,7 +1,8 @@
-{# Parcial do toggle. Na Sprint 2 este mesmo arquivo é o que o HTMX troca na tela. #}
-{# Espera no contexto: data, confirmacao (ou None), pode_alterar #}
+{# Botão do toggle. hx-post envia; a resposta (o card inteiro) substitui #card-confirmacao. #}
 {% if pode_alterar %}
-  <form method="post" action="{% url 'confirmacao_alternar' data|date:'Y-m-d' %}" class="m-0">
+  <form method="post" action="{% url 'confirmacao_alternar' data|date:'Y-m-d' %}" class="m-0"
+        hx-post="{% url 'confirmacao_alternar' data|date:'Y-m-d' %}"
+        hx-target="#card-confirmacao" hx-swap="outerHTML">
     {% csrf_token %}
     {% if confirmacao and confirmacao.confirmado %}
       <button class="btn btn-outline-danger">✅ Vou jantar — cancelar</button>

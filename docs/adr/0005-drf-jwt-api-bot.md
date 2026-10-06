@@ -1,6 +1,6 @@
 # ADR-0005: API com DRF + JWT; o bot é o único cliente
 
-- **Status:** Proposto
+- **Status:** Aceito (grupo, 06/10/2026)
 - **Data:** 2026-10-06
 - **Sprint:** S3
 - **Autor(es):** 

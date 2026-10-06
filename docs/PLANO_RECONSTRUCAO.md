@@ -23,7 +23,7 @@
 | Alpine.js | **Mantido, uso mínimo** | Está no incremento esperado da S2 pelo professor. Usar só onde é natural: estado local de UI (ex: mostrar/ocultar opções de notificação). HTMX cuida de tudo que fala com o servidor. (ADR-0004) |
 | Bot com framework (python-telegram-bot) | **Bot = 1 view Django (webhook) + `requests`** | Sem async, sem segundo processo. Explicável em 5 min. (ADR-0006) |
 | Rotina agendada (cron/Celery) | **Management command + cron da plataforma** | Zero infra extra. `python manage.py perguntar_jantar`. (ADR-0007) |
-| MongoDB espalhado | **Isolado em `avaliacoes/repositorio.py`** | O resto do sistema não sabe que o Mongo existe. (ADR-0002) |
+| MongoDB para avaliações | **Removido — `Avaliacao` é model relacional** | Professor dispensou NoSQL se justificado; a análise do dado real não sustentou. (ADR-0011) |
 | Sprint 4 com 22 SP | **SEO e preferências movidos pra Sprint 3** | O próprio documento já apontava o desbalanceamento. |
 | Deploy Railway/Render | **Decisão adiada pra Sprint 3 (ADR-0009 em "proposto")** | Free tier do Render dorme (quebra webhook/cron). Avaliar na hora. |
 
@@ -43,7 +43,7 @@ merenda-na-medida/
 ├── contas/                           ← Usuario (AbstractUser), login, vínculo Telegram, preferências
 ├── cardapio/                         ← Cardapio, consulta dia/semana, admin
 ├── confirmacoes/                     ← Confirmacao, toggle, regra de corte, dashboard
-├── avaliacoes/                       ← Avaliacao no Mongo (repositorio.py isola o pymongo)
+├── avaliacoes/                       ← Avaliacao (relacional, ADR-0011) + regra "pode avaliar"
 ├── api/                              ← DRF: serializers, viewsets, JWT
 ├── bot/                              ← webhook do Telegram + management command
 ├── templates/                        ← base.html (Bootstrap) + parciais HTMX
@@ -78,13 +78,14 @@ Confirmacao
   confirmado          BooleanField
   atualizado_em       DateTimeField auto
   UNIQUE (usuario, data)        ← garante 1 registro por pessoa por dia
-```
 
-### MongoDB (coleção `avaliacoes`)
-
-```json
-{ "usuario_id": 12, "data": "2026-10-06", "nota": 4, "repetiria": true,
-  "comentario": "faltou sal", "criado_em": "2026-10-06T20:15:00" }
+Avaliacao
+  usuario             FK Usuario
+  data                DateField
+  nota                1–5
+  repetiria           BooleanField
+  comentario          CharField(500), opcional
+  UNIQUE (usuario, data)        ← uma avaliação por pessoa por jantar  (ADR-0011: relacional, não Mongo)
 ```
 
 **Decisão deliberada de simplicidade:** `Cardapio.descricao` é texto livre. Não há `ItemCardapio`.
@@ -106,7 +107,7 @@ Função pura, sem banco, testada com pytest em 5 casos. Isso é o que se mostra
 | Sprint | Período | Incremento esperado (professor) | Situação em 06/10 |
 |---|---|---|---|
 | S1 | 17/08 – 14/09 | Levantamento de requisitos, modelagem de domínio, models/migrations, CRUD admin | **Encerrada.** Requisitos e modelagem existem (documento). Código: zero. |
-| S2 | 21/09 – 19/10 | MongoDB Atlas, HTMX e Alpine.js | **Em andamento, faltam 13 dias.** Precisa entregar S1 + S2 na review. |
+| S2 | 21/09 – 19/10 | MongoDB Atlas (dispensado — ADR-0011), HTMX e Alpine.js | **Em andamento, faltam 13 dias.** Precisa entregar S1 + S2 na review. |
 | S3 | 26/10 – 16/11 | API REST documentada, autenticação, integração com serviço externo | Normal |
 | S4 | 23/11 – 07/12 | Testes, deploy, SEO, documentação e apresentação | Normal |
 
@@ -114,10 +115,10 @@ Função pura, sem banco, testada com pytest em 5 casos. Isso é o que se mostra
 
 - **06–08/10** — Fase 0 (um encontro) + início da Fase 1
 - **09–13/10** — Fase 1 completa (MVP rodando com SQLite)
-- **14–18/10** — Fase 2 (HTMX, Alpine, Mongo)
-- **19/10** — Review S2: demo do MVP + toggle sem reload + avaliação no Atlas
+- **14–18/10** — Fase 2 (HTMX, Alpine, avaliação)
+- **19/10** — Review S2: demo do MVP + toggle sem reload + avaliação; apresentar o ADR-0011
 
-Se em 13/10 a Fase 1 não estiver pronta, a Fase 2 encolhe: entra HTMX no toggle (é pequeno) e Mongo só com `salvar()`; Alpine fica num único `x-show`. Melhor levar menos coisa funcionando do que tudo pela metade.
+Se em 13/10 a Fase 1 não estiver pronta, a Fase 2 encolhe: entra HTMX no toggle (é pequeno) e avaliação sem resumo; Alpine fica num único `x-show`. Melhor levar menos coisa funcionando do que tudo pela metade.
 
 Na retrospectiva da S2, registrar a reconstrução como fato e o que o grupo mudou pra não repetir (git diário, pareamento). Isso é conteúdo legítimo de Gestão Ágil, não vergonha.
 
@@ -153,15 +154,15 @@ Objetivo: aluno vê cardápio e confirma; produção vê a contagem. **Só Djang
 
 **Checkpoint:** demo ponta a ponta sem nenhuma tecnologia "nova". Se o resto do semestre der errado, isso já é entregável.
 
-### Fase 2 — HTMX + Mongo (= resto da Sprint 2)
+### Fase 2 — HTMX + Alpine + Avaliação (= resto da Sprint 2)
 1. HTMX via CDN em `base.html`
 2. Toggle vira `hx-post` + `hx-swap` devolvendo só o parcial `_botao_confirmar.html`
-3. `avaliacoes/repositorio.py`: `salvar(avaliacao)`, `listar_por_data(data)` usando `pymongo` (Atlas free)
-4. View + template de avaliação (só liberada após o jantar do dia)
+3. `Avaliacao` como model relacional (ADR-0011) + `resumo_do_dia()` agregado
+4. View + template de avaliação (só liberada após o jantar do dia); resumo na página do dia e média no dashboard
 5. Preferências de notificação: form com Alpine (`x-data` controlando quais opções aparecem) + submit normal
-6. ADR-0004 (HTMX + Alpine) e ADR-0002 revisitado com o que aprenderam
+6. ADR-0004 (HTMX + Alpine) e ADR-0011 (por que não Mongo)
 
-**Checkpoint:** toggle sem reload; avaliação aparecendo no Atlas.
+**Checkpoint:** toggle sem reload; avaliação com média e % "repetiria" por dia.
 
 ### Fase 3 — API + JWT + Postgres (= Sprint 3)
 1. Trocar `DATABASE_URL` para Neon (`dj-database-url`), rodar migrations, testar
@@ -223,7 +224,7 @@ Marque quem é o "dono" de cada um. Na apresentação, o dono responde.
 | HTMX: `hx-post`, `hx-target`, `hx-swap` — "troca um pedaço do HTML" | toggle | |
 | Alpine: `x-data`, `x-show` — estado só no navegador, sem servidor | preferências | |
 | HTMX vs Alpine: quando o dado vai pro servidor e quando não | ADR-0004 | |
-| Persistência poliglota: quando relacional, quando documento | ADR-0002 | |
+| Persistência poliglota: quando relacional, quando documento — e por que aqui não | ADR-0002 → 0011 | |
 | REST: recurso, verbo, status code; serializer = tradutor model↔JSON | `api/` | |
 | JWT: stateless, `Bearer`, expiração, por que não sessão | `api/` | |
 | Webhook vs polling | `bot/views.py` | |

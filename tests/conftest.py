@@ -27,3 +27,4 @@ def amanha():
 @pytest.fixture
 def cardapio_amanha(db, amanha):
     return Cardapio.objects.create(data=amanha, descricao="Arroz, feijão, frango grelhado, salada")
+

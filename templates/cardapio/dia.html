@@ -22,17 +22,23 @@
 </div>
 
 {% if cardapio %}
-  <div class="card shadow-sm">
+  {% include "confirmacoes/_card_confirmacao.html" %}
+
+  {% if pode_avaliar or resumo_avaliacao.total %}
+  <div class="card shadow-sm mt-3">
     <div class="card-body d-flex justify-content-between align-items-center">
-      <div>
-        <strong>{{ total_confirmados }}</strong> pessoa{{ total_confirmados|pluralize }} confirmada{{ total_confirmados|pluralize }}
+      <div class="small text-muted">
+        {% if resumo_avaliacao.total %}
+          ★ {{ resumo_avaliacao.media }} · {{ resumo_avaliacao.pct_repetiria }}% repetiriam · {{ resumo_avaliacao.total }} avaliaç{{ resumo_avaliacao.total|pluralize:"ão,ões" }}
+        {% else %}Ninguém avaliou ainda.{% endif %}
       </div>
-      {% if user.is_authenticated %}
-        {% include "confirmacoes/_botao_confirmar.html" %}
-      {% else %}
-        <a class="btn btn-success" href="{% url 'login' %}?next={{ request.path }}">Entrar para confirmar</a>
+      {% if pode_avaliar and user.is_authenticated %}
+        <a class="btn btn-outline-success btn-sm" href="{% url 'avaliar' data|date:'Y-m-d' %}">
+          {% if minha_avaliacao %}Editar minha avaliação{% else %}Avaliar o jantar{% endif %}
+        </a>
       {% endif %}
     </div>
   </div>
+  {% endif %}
 {% endif %}
 {% endblock %}
