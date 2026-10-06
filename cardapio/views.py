@@ -49,10 +49,35 @@ def dia(request, data: str):
 
 
 def semana(request):
-    """Segunda a domingo da semana atual, com o cardápio de cada dia (ou vazio)."""
+    """
+    Segunda a domingo, com o cardápio de cada dia e — se logado — o toggle de presença
+    por dia, pra planejar a semana inteira numa tela. ?inicio=YYYY-MM-DD navega entre semanas.
+    """
     hoje_ = timezone.localdate()
-    segunda = hoje_ - timedelta(days=hoje_.weekday())
+    try:
+        referencia = date.fromisoformat(request.GET.get("inicio", ""))
+    except ValueError:
+        referencia = hoje_
+    segunda = referencia - timedelta(days=referencia.weekday())
     dias = [segunda + timedelta(days=i) for i in range(7)]
+
     cardapios = {c.data: c for c in Cardapio.objects.filter(data__in=dias)}
-    semana_ = [{"data": d, "cardapio": cardapios.get(d), "e_hoje": d == hoje_} for d in dias]
-    return render(request, "cardapio/semana.html", {"semana": semana_})
+    confirmacoes = {}
+    if request.user.is_authenticated:
+        confirmacoes = {c.data: c for c in Confirmacao.objects.filter(usuario=request.user, data__in=dias)}
+
+    semana_ = [
+        {
+            "data": d,
+            "cardapio": cardapios.get(d),
+            "e_hoje": d == hoje_,
+            "confirmacao": confirmacoes.get(d),
+            "pode_alterar": Confirmacao.pode_alterar_agora(d),
+        }
+        for d in dias
+    ]
+    return render(request, "cardapio/semana.html", {
+        "semana": semana_,
+        "semana_anterior": segunda - timedelta(days=7),
+        "proxima_semana": segunda + timedelta(days=7),
+    })

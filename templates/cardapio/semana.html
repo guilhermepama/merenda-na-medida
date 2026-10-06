@@ -1,19 +1,32 @@
 {% extends "base.html" %}
 {% block titulo %}Semana — Merenda na Medida{% endblock %}
 {% block conteudo %}
-<h1 class="h4 mb-3">Cardápio da semana</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <a class="btn btn-outline-secondary btn-sm" href="{% url 'cardapio_semana' %}?inicio={{ semana_anterior|date:'Y-m-d' }}">‹ semana anterior</a>
+  <h1 class="h4 mb-0 text-center">Semana de {{ semana.0.data|date:"d/m" }} a {{ semana.6.data|date:"d/m" }}</h1>
+  <a class="btn btn-outline-secondary btn-sm" href="{% url 'cardapio_semana' %}?inicio={{ proxima_semana|date:'Y-m-d' }}">próxima semana ›</a>
+</div>
+
+{% if user.is_authenticated %}
+  <p class="text-muted small">Marque os dias em que vai jantar. Dá pra mudar até o horário de corte de cada dia.</p>
+{% endif %}
+
 <div class="list-group shadow-sm">
   {% for d in semana %}
-    <a href="{% url 'cardapio_dia' d.data|date:'Y-m-d' %}"
-       class="list-group-item list-group-item-action {% if d.e_hoje %}list-group-item-success{% endif %}">
-      <div class="d-flex justify-content-between">
-        <strong>{{ d.data|date:"D d/m" }}</strong>
-        {% if d.e_hoje %}<span class="badge bg-success">hoje</span>{% endif %}
-      </div>
-      <div class="small text-muted text-truncate">
-        {% if d.cardapio %}{{ d.cardapio.descricao|truncatechars:90 }}{% else %}—{% endif %}
-      </div>
-    </a>
+    <div class="list-group-item d-flex align-items-center {% if d.e_hoje %}list-group-item-success{% endif %}">
+      <a href="{% url 'cardapio_dia' d.data|date:'Y-m-d' %}" class="flex-grow-1 text-decoration-none text-body" style="min-width: 0">
+        <div class="d-flex align-items-center gap-2">
+          <strong>{{ d.data|date:"D d/m" }}</strong>
+          {% if d.e_hoje %}<span class="badge bg-success">hoje</span>{% endif %}
+        </div>
+        <div class="small text-muted text-truncate">
+          {% if d.cardapio %}{{ d.cardapio.descricao|truncatechars:90 }}{% else %}—{% endif %}
+        </div>
+      </a>
+      {% if d.cardapio and user.is_authenticated %}
+        {% include "confirmacoes/_botao_semana.html" with data=d.data confirmacao=d.confirmacao pode_alterar=d.pode_alterar %}
+      {% endif %}
+    </div>
   {% endfor %}
 </div>
 {% endblock %}

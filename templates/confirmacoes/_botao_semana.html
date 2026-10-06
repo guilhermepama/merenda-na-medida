@@ -1,0 +1,20 @@
+{# Toggle compacto da lista da semana. Mesma view do card; só o parcial muda. #}
+{# Contexto: data, confirmacao, pode_alterar #}
+<div id="semana-{{ data|date:'Y-m-d' }}" class="ms-3 flex-shrink-0">
+  {% if pode_alterar %}
+    <form method="post" action="{% url 'confirmacao_alternar' data|date:'Y-m-d' %}?origem=semana" class="m-0"
+          hx-post="{% url 'confirmacao_alternar' data|date:'Y-m-d' %}?origem=semana"
+          hx-target="#semana-{{ data|date:'Y-m-d' }}" hx-swap="outerHTML">
+      {% csrf_token %}
+      {% if confirmacao and confirmacao.confirmado %}
+        <button class="btn btn-success btn-sm" title="Clique para cancelar">✅ Vou</button>
+      {% else %}
+        <button class="btn btn-outline-secondary btn-sm">Vou jantar</button>
+      {% endif %}
+    </form>
+  {% else %}
+    <span class="badge text-bg-light border">
+      {% if confirmacao and confirmacao.confirmado %}✅ confirmado{% else %}encerrado{% endif %}
+    </span>
+  {% endif %}
+</div>

@@ -34,7 +34,9 @@ def alternar(request, data: str):
     if not e_htmx:
         return redirect("cardapio_dia", data=data)  # fallback sem JS continua funcionando
 
-    return render(request, "confirmacoes/_card_confirmacao.html", {
+    # ?origem=semana → botão compacto da lista; senão, o card da página do dia
+    parcial = "_botao_semana.html" if request.GET.get("origem") == "semana" else "_card_confirmacao.html"
+    return render(request, f"confirmacoes/{parcial}", {
         "data": data_obj,
         "confirmacao": Confirmacao.objects.filter(usuario=request.user, data=data_obj).first(),
         "pode_alterar": Confirmacao.pode_alterar_agora(data_obj),
