@@ -17,6 +17,12 @@ O documento previa `Cardapio` + `ItemCardapio`. Na reconstrução, cada model a 
 - `confirmacoes/regras.py::pode_alterar(data_jantar, agora, horario_corte) -> bool`, função pura; `HORARIO_CORTE` em `settings` (default `16:00`), lido de env.
 - Toggle no site e no bot chamam a mesma função.
 
+## Fatos levantados em 06/10 (cardápio real de outubro/2026)
+- O PDF da Prefeitura (STARB) é **digitalizado sem camada de texto**. Importação automática de PDF/OCR está **fora do escopo**; a carga é mensal, por CSV transcrito à mão (`dados/cardapio-AAAA-MM.csv` + `manage.py importar_cardapio`), ~10 min/mês.
+- Jantar servido às **20:40**. O default `HORARIO_CORTE=16:00` é provisório — **pendência de levantamento com a cozinha/Fatec:** a que horas ela precisa do número pra iniciar o preparo? Registrar a resposta aqui e no `.env.example`.
+- Feriados (`FERIADO` no CSV) não geram `Cardapio`; sem cardápio, não há botão de confirmação.
+- Pratos se repetem semanalmente (ex.: bolonhesa toda sexta) — a avaliação por dia (S2) acumula dado útil rápido.
+
 ## Consequências
 - Positivas: menos um model; a regra crítica é testável sem banco (5 testes cobrem).
 - Negativas: ranking de pratos e avaliação por item ficam para versão futura (já estavam fora do escopo).
