@@ -1,0 +1,41 @@
+{# Um dia da semana no painel. O HTMX troca esta div inteira (outerHTML) entre leitura e edição. #}
+{# Contexto: l = {data, cardapio, total, e_hoje, editando} #}
+{% with d=l.data|date:'Y-m-d' %}
+<div id="linha-{{ d }}" class="list-group-item py-3 {% if l.e_hoje %}border-start border-4 border-success{% endif %}">
+  <div class="d-flex flex-wrap gap-2 gap-md-3 align-items-start">
+    <div class="flex-shrink-0" style="width: 5.5rem">
+      <div class="fw-semibold">{{ l.data|date:"D d/m" }}</div>
+      {% if l.e_hoje %}<span class="badge bg-success">hoje</span>{% endif %}
+    </div>
+
+    {% if l.editando %}
+      <form class="linha-desc m-0" method="post" action="{% url 'painel_linha_cardapio' d %}"
+            hx-post="{% url 'painel_linha_cardapio' d %}" hx-target="#linha-{{ d }}" hx-swap="outerHTML">
+        {% csrf_token %}
+        <textarea name="descricao" class="form-control mb-2" rows="3" autofocus
+                  placeholder="Arroz, feijão, prato principal, salada, sobremesa…">{{ l.cardapio.descricao|default:'' }}</textarea>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+          <button class="btn btn-success btn-sm">Salvar</button>
+          <a class="btn btn-link btn-sm text-secondary" href="{% url 'painel_cardapio' %}?inicio={{ d }}"
+             hx-get="{% url 'painel_linha_cardapio' d %}" hx-target="#linha-{{ d }}" hx-swap="outerHTML">Cancelar</a>
+          <span class="small text-muted ms-auto">Vazio = dia sem jantar (feriado).</span>
+        </div>
+      </form>
+    {% else %}
+      <div class="linha-desc">
+        {% if l.cardapio %}{{ l.cardapio.descricao }}{% else %}<span class="text-muted fst-italic">Sem cardápio</span>{% endif %}
+      </div>
+      <div class="text-end flex-shrink-0 ms-auto">
+        <a class="d-block small text-decoration-none {% if l.total %}text-success{% else %}text-muted{% endif %}"
+           href="{% url 'painel_confirmados' %}?data={{ d }}">
+          <span class="painel-numero fw-semibold">{{ l.total }}</span> confirmado{{ l.total|pluralize }}
+        </a>
+        <a class="btn btn-outline-success btn-sm mt-1" href="{% url 'painel_cardapio' %}?inicio={{ d }}&editar={{ d }}"
+           hx-get="{% url 'painel_linha_cardapio' d %}?editar=1" hx-target="#linha-{{ d }}" hx-swap="outerHTML">
+          {% if l.cardapio %}Editar{% else %}Lançar{% endif %}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endwith %}

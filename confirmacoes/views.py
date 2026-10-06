@@ -1,6 +1,5 @@
 from datetime import date, timedelta
 
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect, render
@@ -8,6 +7,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from avaliacoes.models import Avaliacao
+from painel.permissoes import apenas_cozinha
 
 from .models import Confirmacao
 
@@ -44,11 +44,11 @@ def alternar(request, data: str):
     })
 
 
-@staff_member_required
+@apenas_cozinha
 def dashboard(request):
     """
     Painel da produção: confirmados de hoje + últimos 7 dias pra comparar.
-    staff_member_required = só quem tem 'acesso ao admin' (a cozinha/diretoria) entra.
+    Aba 'Últimos 7 dias' do painel da cozinha — mesma regra de acesso do painel (ADR-0012).
     """
     hoje = timezone.localdate()
     dias = [hoje - timedelta(days=i) for i in range(6, -1, -1)]  # 6 dias atrás … hoje

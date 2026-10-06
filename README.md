@@ -21,7 +21,9 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-Abra http://127.0.0.1:8000 — e http://127.0.0.1:8000/admin para o painel.
+Abra http://127.0.0.1:8000. Logado com um usuário **staff**, o link "Painel da cozinha" leva a
+http://127.0.0.1:8000/painel/ — cardápio da semana, confirmados, avaliações e importação do CSV (ADR-0012).
+O http://127.0.0.1:8000/admin/ continua disponível para a equipe técnica.
 
 ## API (Sprint 3 — consumida pelo bot)
 

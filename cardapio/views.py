@@ -1,5 +1,5 @@
 """
-Consulta do cardápio. Só leitura — quem escreve é o admin (S1.4).
+Consulta do cardápio. Só leitura — quem escreve é o painel da cozinha (ADR-0012).
 """
 from datetime import date, timedelta
 

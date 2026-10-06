@@ -23,3 +23,4 @@ qualquer integrante consegue justificar "por que X e não Y".
 | [0009](0009-plataforma-de-deploy.md) | Plataforma de deploy | Proposto | S3/S4 |
 | [0010](0010-escopo-de-testes.md) | Escopo de testes: TDD só nas regras críticas | Aceito | S4 |
 | [0011](0011-avaliacao-relacional-sem-mongodb.md) | Avaliação no relacional; não usar MongoDB | Aceito | S2 |
+| [0012](0012-painel-da-cozinha.md) | Painel da cozinha próprio; admin só para a equipe técnica | Aceito | S3 |

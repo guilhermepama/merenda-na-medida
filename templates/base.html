@@ -16,16 +16,17 @@
   <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.4/dist/htmx.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
   <style>[x-cloak]{display:none!important}</style>
+  {% block head_extra %}{% endblock %}
 </head>
 {# hx-headers: todo request do HTMX leva o token CSRF (Sprint 2) #}
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="bg-light">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-success mb-4">
+<nav class="navbar navbar-expand-lg navbar-dark bg-success mb-4 d-print-none">
   <div class="container">
     <a class="navbar-brand" href="{% url 'home' %}">🍽️ Merenda na Medida</a>
     <div class="ms-auto d-flex gap-3 align-items-center text-white">
       <a class="text-white text-decoration-none small" href="{% url 'cardapio_semana' %}">Semana</a>
-      {% if user.is_staff %}<a class="text-white text-decoration-none small" href="{% url 'dashboard' %}">Produção</a>{% endif %}
+      {% if user.is_staff %}<a class="text-white text-decoration-none small" href="{% url 'painel_cardapio' %}">Painel da cozinha</a>{% endif %}
       {% if user.is_authenticated %}
         <a class="text-white text-decoration-none" href="{% url 'preferencias' %}">Olá, {{ user.first_name|default:user.username }}</a>
         <form method="post" action="{% url 'logout' %}" class="m-0">{% csrf_token %}

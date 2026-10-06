@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "cardapio",
     "confirmacoes",
     "avaliacoes",
+    "painel",
     "api",
     "bot",
 ]

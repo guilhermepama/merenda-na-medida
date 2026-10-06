@@ -18,7 +18,7 @@ def test_total_do_dia_conta_so_confirmados(db, usuario):
 def test_dashboard_exige_staff(client, usuario, cozinha):
     url = reverse("dashboard")
     client.force_login(usuario)
-    assert client.get(url).status_code == 302  # aluno comum é redirecionado
+    assert client.get(url).status_code == 403  # aluno comum é barrado (ADR-0012)
     client.force_login(cozinha)
     assert client.get(url).status_code == 200
 

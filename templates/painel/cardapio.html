@@ -1,0 +1,19 @@
+{% extends "painel/base_painel.html" %}
+{% block painel_titulo_aba %}Cardápio{% endblock %}
+{% block painel_titulo %}Cardápio da semana{% endblock %}
+{% block painel %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <a class="btn btn-outline-secondary btn-sm" href="{% url 'painel_cardapio' %}?inicio={{ semana_anterior|date:'Y-m-d' }}">‹<span class="d-none d-sm-inline"> semana anterior</span></a>
+  <div class="text-center">
+    <span class="fw-semibold">{{ segunda|date:"d/m" }} a {{ sexta|date:"d/m" }}</span>
+    {% if not e_semana_atual %}<a class="small ms-2" href="{% url 'painel_cardapio' %}">voltar para esta semana</a>{% endif %}
+  </div>
+  <a class="btn btn-outline-secondary btn-sm" href="{% url 'painel_cardapio' %}?inicio={{ proxima_semana|date:'Y-m-d' }}"><span class="d-none d-sm-inline">próxima semana </span>›</a>
+</div>
+
+<div class="list-group shadow-sm">
+  {% for l in linhas %}{% include "painel/_linha_cardapio.html" %}{% endfor %}
+</div>
+
+<p class="small text-muted mt-3">Vai lançar o mês inteiro? <a href="{% url 'painel_importar' %}">Importe o CSV</a>.</p>
+{% endblock %}

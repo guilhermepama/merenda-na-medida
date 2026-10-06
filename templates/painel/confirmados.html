@@ -1,0 +1,35 @@
+{% extends "painel/base_painel.html" %}
+{% block painel_titulo_aba %}Confirmados{% endblock %}
+{% block painel_titulo %}Quem vai jantar{% endblock %}
+{% block painel_acoes %}<button class="btn btn-outline-success btn-sm" onclick="window.print()">Imprimir lista</button>{% endblock %}
+{% block painel %}
+{% include "painel/_navegar_dia.html" %}
+
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card shadow-sm text-center h-100">
+      <div class="card-body">
+        <div class="text-muted small">Confirmados</div>
+        <div class="display-3 fw-bold text-success painel-numero">{{ confirmacoes|length }}</div>
+        {% if cancelaram %}<div class="small text-muted">{{ cancelaram }} cancela{{ cancelaram|pluralize:"ou,ram" }}</div>{% endif %}
+      </div>
+      <div class="card-footer small text-start bg-white">
+        {% if cardapio %}{{ cardapio.descricao }}{% else %}<span class="text-muted fst-italic">Sem cardápio neste dia</span>{% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        {% if confirmacoes %}
+          <ol class="mb-0" style="columns: 2; column-gap: 2rem">
+            {% for c in confirmacoes %}<li class="py-1">{{ c.usuario }}</li>{% endfor %}
+          </ol>
+        {% else %}
+          <p class="text-muted mb-0">Ninguém confirmou presença para este dia.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

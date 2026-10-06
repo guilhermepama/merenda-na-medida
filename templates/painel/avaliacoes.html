@@ -1,0 +1,46 @@
+{% extends "painel/base_painel.html" %}
+{% block painel_titulo_aba %}Avaliações{% endblock %}
+{% block painel_titulo %}Como foi o jantar{% endblock %}
+{% block painel %}
+{% include "painel/_navegar_dia.html" %}
+
+{% if resumo.total %}
+<div class="row g-3 mb-3">
+  <div class="col-6 col-md-3"><div class="card shadow-sm text-center"><div class="card-body">
+    <div class="small text-muted">Nota média</div><div class="h2 mb-0 text-success painel-numero">★ {{ resumo.media }}</div>
+  </div></div></div>
+  <div class="col-6 col-md-3"><div class="card shadow-sm text-center"><div class="card-body">
+    <div class="small text-muted">Repetiriam</div><div class="h2 mb-0 painel-numero">{{ resumo.pct_repetiria }}%</div>
+  </div></div></div>
+  <div class="col-12 col-md-6"><div class="card shadow-sm"><div class="card-body py-2">
+    {% for n in distribuicao %}
+      <div class="d-flex align-items-center small my-1">
+        <div style="width: 2.5rem">{{ n.nota }} ★</div>
+        <div class="flex-grow-1 bg-light rounded me-2" style="height: .8rem">
+          <div class="bg-success rounded h-100" style="width: {% widthratio n.total maior 100 %}%"></div>
+        </div>
+        <div style="width: 1.5rem" class="text-end painel-numero">{{ n.total }}</div>
+      </div>
+    {% endfor %}
+  </div></div></div>
+</div>
+<p class="small text-muted">{{ resumo.total }} avaliaç{{ resumo.total|pluralize:"ão,ões" }} de {{ confirmados }} confirmado{{ confirmados|pluralize }}. As avaliações são anônimas para a cozinha.</p>
+
+<h2 class="h6 mt-4">Comentários</h2>
+<div class="list-group shadow-sm">
+  {% for c in comentarios %}
+    <div class="list-group-item">
+      <span class="text-success">{{ c.estrelas }}</span>
+      {% if c.repetiria %}<span class="badge text-bg-light border ms-1">repetiria</span>{% endif %}
+      <div>{{ c.comentario }}</div>
+    </div>
+  {% empty %}
+    <div class="list-group-item text-muted">Nenhum comentário escrito.</div>
+  {% endfor %}
+</div>
+{% else %}
+  <div class="card shadow-sm"><div class="card-body text-muted">
+    Nenhuma avaliação para este dia{% if cardapio %}.{% else %} — e não há cardápio cadastrado.{% endif %}
+  </div></div>
+{% endif %}
+{% endblock %}

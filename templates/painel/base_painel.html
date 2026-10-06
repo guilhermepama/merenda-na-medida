@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{# Moldura do painel da cozinha (ADR-0012): título + abas. Cada tela preenche painel_titulo e painel. #}
+{% block titulo %}{% block painel_titulo_aba %}Painel{% endblock %} — Merenda na Medida{% endblock %}
+{% block head_extra %}
+<style>
+  .painel-abas { border-bottom: 1px solid var(--bs-border-color); gap: .25rem; }
+  .painel-abas .nav-link { color: var(--bs-secondary-color); border-radius: .5rem .5rem 0 0; padding: .6rem 1rem; }
+  .painel-abas .nav-link:hover { color: var(--bs-success); }
+  .painel-abas .nav-link.active { color: var(--bs-success); font-weight: 600; box-shadow: inset 0 -3px 0 var(--bs-success); background: none; }
+  .painel-rotulo { letter-spacing: .08em; font-size: .72rem; }
+  /* linha do cardápio: no celular a descrição desce para uma linha inteira; no desktop fica no meio */
+  .linha-desc { flex: 1 1 100%; order: 3; min-width: 0; }
+  @media (min-width: 768px) { .linha-desc { flex: 1 1 0; order: 0; } }
+  .painel-numero { font-variant-numeric: tabular-nums; }
+  @media print { .painel-abas, .painel-acoes { display: none !important; } body { background: #fff !important; } }
+</style>
+{% endblock %}
+{% block conteudo %}
+{% with atual=request.resolver_match.url_name %}
+<header class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+  <div>
+    <div class="painel-rotulo text-uppercase text-success fw-bold">Painel da cozinha</div>
+    <h1 class="h3 mb-0">{% block painel_titulo %}{% endblock %}</h1>
+  </div>
+  <div class="painel-acoes">{% block painel_acoes %}{% endblock %}</div>
+</header>
+
+<nav class="nav painel-abas mb-4 flex-nowrap overflow-auto">
+  <a class="nav-link text-nowrap {% if atual == 'painel_cardapio' %}active{% endif %}" href="{% url 'painel_cardapio' %}">Cardápio</a>
+  <a class="nav-link text-nowrap {% if atual == 'painel_confirmados' %}active{% endif %}" href="{% url 'painel_confirmados' %}">Confirmados</a>
+  <a class="nav-link text-nowrap {% if atual == 'painel_avaliacoes' %}active{% endif %}" href="{% url 'painel_avaliacoes' %}">Avaliações</a>
+  <a class="nav-link text-nowrap {% if atual == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">Últimos 7 dias</a>
+  <a class="nav-link text-nowrap {% if atual == 'painel_importar' %}active{% endif %}" href="{% url 'painel_importar' %}">Importar CSV</a>
+</nav>
+{% endwith %}
+
+{% block painel %}{% endblock %}
+{% endblock %}

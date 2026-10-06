@@ -1,0 +1,11 @@
+{# Navegação por dia: ‹ anterior · seletor de data · próximo ›. Contexto: dia, rota (nome da URL) #}
+<div class="d-flex flex-wrap align-items-center gap-2 mb-4 painel-acoes">
+  <a class="btn btn-outline-secondary btn-sm" href="{% url rota %}?data={{ anterior|date:'Y-m-d' }}">‹</a>
+  <form method="get" class="d-flex gap-2 m-0">
+    <input type="date" name="data" value="{{ dia|date:'Y-m-d' }}" class="form-control form-control-sm" onchange="this.form.submit()">
+    <noscript><button class="btn btn-sm btn-success">Ir</button></noscript>
+  </form>
+  <a class="btn btn-outline-secondary btn-sm" href="{% url rota %}?data={{ proximo|date:'Y-m-d' }}">›</a>
+  <a class="btn btn-link btn-sm" href="{% url rota %}">hoje</a>
+  <span class="ms-1 fw-semibold">{{ dia|date:"l, d/m/Y" }}</span>
+</div>

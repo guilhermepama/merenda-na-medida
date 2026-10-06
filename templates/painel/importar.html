@@ -1,0 +1,29 @@
+{% extends "painel/base_painel.html" %}
+{% block painel_titulo_aba %}Importar CSV{% endblock %}
+{% block painel_titulo %}Importar cardápio do mês{% endblock %}
+{% block painel %}
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="card shadow-sm"><div class="card-body">
+      <form method="post" enctype="multipart/form-data" class="m-0">
+        {% csrf_token %}
+        <label class="form-label" for="arquivo">Arquivo .csv</label>
+        <input class="form-control mb-3" type="file" id="arquivo" name="arquivo" accept=".csv,text/csv" required>
+        <button class="btn btn-success">Importar</button>
+      </form>
+    </div></div>
+    <p class="small text-muted mt-3">
+      Pode importar de novo sem medo: dia que já existe é <strong>atualizado</strong>, não duplicado.
+      Se alguma linha estiver errada, <strong>nada</strong> é gravado — corrija o arquivo e envie outra vez.
+    </p>
+  </div>
+  <div class="col-md-6">
+    <h2 class="h6">Formato</h2>
+    <p class="small mb-2">Duas colunas, com este cabeçalho. Data no formato ano-mês-dia. <code>FERIADO</code> = não há jantar.</p>
+<pre class="bg-white border rounded p-3 small mb-2">data,descricao
+2026-10-05,"Arroz, Feijão, Carne Moída, Salada"
+2026-10-12,FERIADO</pre>
+    <p class="small text-muted">No Excel: <em>Salvar como → CSV UTF-8 (delimitado por vírgulas)</em>.</p>
+  </div>
+</div>
+{% endblock %}
